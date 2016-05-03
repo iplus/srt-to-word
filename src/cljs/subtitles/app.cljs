@@ -41,10 +41,12 @@
 (defn process
   [text]
   (let [text->html (comp chunk->html text->chunk)
-        converter (partial map text->html)]
-    (-> text
-        (string/split #"\n\r")
-        converter)))
+        chunks (-> text
+                   (string/split #"\n\r"))]
+        (->> chunks
+                 (map string/trim)
+                 (filter (complement (partial = "")))
+                 (map text->html))))
 
 (def app-state (reagent/atom {:text "Drop .srt here"
                               :class "drop-area drop-area_empty"}))
